@@ -1,6 +1,6 @@
 # Ownable.sol
 
-View Source: [openzeppelin-solidity/contracts/ownership/Ownable.sol](../../openzeppelin-solidity/contracts/ownership/Ownable.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/ownership/Ownable.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/ownership/Ownable.sol)
 
 **↘ Derived Contracts: [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md), [PriorityQueue](PriorityQueue.md), [SpendingConditionRegistry](SpendingConditionRegistry.md)**
 

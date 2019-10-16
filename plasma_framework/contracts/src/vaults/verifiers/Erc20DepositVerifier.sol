@@ -1,6 +1,6 @@
 pragma solidity 0.5.11;
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/IERC20.sol";
 
 import "./IErc20DepositVerifier.sol";
 import {PaymentTransactionModel as DepositTx} from "../../transactions/PaymentTransactionModel.sol";

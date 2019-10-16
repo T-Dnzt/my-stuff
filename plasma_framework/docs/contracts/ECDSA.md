@@ -1,6 +1,6 @@
 # ECDSA.sol
 
-View Source: [openzeppelin-solidity/contracts/cryptography/ECDSA.sol](../../openzeppelin-solidity/contracts/cryptography/ECDSA.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/cryptography/ECDSA.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/cryptography/ECDSA.sol)
 
 **ECDSA**
 

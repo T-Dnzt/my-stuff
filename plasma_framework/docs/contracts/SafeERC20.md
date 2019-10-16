@@ -1,6 +1,6 @@
 # SafeERC20 (SafeERC20.sol)
 
-View Source: [openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol](../../openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/SafeERC20.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/SafeERC20.sol)
 
 **SafeERC20**
 

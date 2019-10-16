@@ -1,6 +1,6 @@
 # SafeMath.sol
 
-View Source: [openzeppelin-solidity/contracts/math/SafeMath.sol](../../openzeppelin-solidity/contracts/math/SafeMath.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/SafeMath.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/SafeMath.sol)
 
 **SafeMath**
 

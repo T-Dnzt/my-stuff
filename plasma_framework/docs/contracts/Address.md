@@ -1,6 +1,6 @@
 # Address.sol
 
-View Source: [openzeppelin-solidity/contracts/utils/Address.sol](../../openzeppelin-solidity/contracts/utils/Address.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/utils/Address.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/utils/Address.sol)
 
 **Address**
 

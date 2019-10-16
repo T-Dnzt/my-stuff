@@ -1,6 +1,6 @@
 pragma solidity 0.5.11;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/SafeMath.sol";
 
 // A 'NonCompliantERC20' token is one that uses an old version of the ERC20 standard,
 // as described here https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca

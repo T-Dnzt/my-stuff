@@ -8,7 +8,7 @@ import "../../transactions/WireTransaction.sol";
 import "../../transactions/PaymentTransactionModel.sol";
 import "../../transactions/outputs/PaymentOutputModel.sol";
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/SafeMath.sol";
 
 /**
 * @notice Verifies state transitions for payment transaction

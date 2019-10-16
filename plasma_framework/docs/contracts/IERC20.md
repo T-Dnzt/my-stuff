@@ -1,6 +1,6 @@
 # IERC20.sol
 
-View Source: [openzeppelin-solidity/contracts/token/ERC20/IERC20.sol](../../openzeppelin-solidity/contracts/token/ERC20/IERC20.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/IERC20.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/IERC20.sol)
 
 **IERC20**
 

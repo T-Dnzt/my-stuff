@@ -4,8 +4,8 @@ import "./Vault.sol";
 import "./verifiers/IErc20DepositVerifier.sol";
 import "../framework/PlasmaFramework.sol";
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/IERC20.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/token/ERC20/SafeERC20.sol";
 
 contract Erc20Vault is Vault {
     using SafeERC20 for IERC20;

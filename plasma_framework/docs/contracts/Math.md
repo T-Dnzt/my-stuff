@@ -1,6 +1,6 @@
 # Math.sol
 
-View Source: [openzeppelin-solidity/contracts/math/Math.sol](../../openzeppelin-solidity/contracts/math/Math.sol)
+View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/Math.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/Math.sol)
 
 **Math**
 

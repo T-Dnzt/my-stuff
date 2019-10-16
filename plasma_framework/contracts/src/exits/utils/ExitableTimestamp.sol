@@ -1,6 +1,6 @@
 pragma solidity 0.5.11;
 
-import "openzeppelin-solidity/contracts/math/Math.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/Math.sol";
 
 library ExitableTimestamp {
     struct Calculator {
