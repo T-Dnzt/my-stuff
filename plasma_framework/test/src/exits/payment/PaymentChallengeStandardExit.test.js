@@ -10,6 +10,7 @@ const SpyPlasmaFramework = artifacts.require('SpyPlasmaFrameworkForExitGame');
 const SpyEthVault = artifacts.require('SpyEthVaultForExitGame');
 const SpyErc20Vault = artifacts.require('SpyErc20VaultForExitGame');
 const TxFinalizationVerifier = artifacts.require('TxFinalizationVerifier');
+const Attacker = artifacts.require('FallbackFunctionFailAttacker');
 
 const {
     BN, constants, expectEvent, expectRevert,
@@ -149,7 +150,7 @@ contract('PaymentStandardExitRouter', ([_, alice, bob]) => {
 
                 await expectRevert(
                     this.exitGame.challengeStandardExit(args),
-                    'Failed to get the outputGuardHandler of the output type',
+                    'Failed to retrieve the outputGuardHandler of the output type',
                 );
             });
         });
@@ -165,11 +166,26 @@ contract('PaymentStandardExitRouter', ([_, alice, bob]) => {
                 );
             });
 
+            it('should fail when malicious user tries attack when paying out bond', async () => {
+                await this.exitGame.depositFundForTest({ value: this.startStandardExitBondSize });
+
+                this.args = getTestInputArgs(OUTPUT_TYPE.PAYMENT, alice);
+                this.exitData = getTestExitData(this.args, alice, this.startStandardExitBondSize);
+                await this.exitGame.setExit(this.args.exitId, this.exitData);
+
+                const attacker = await Attacker.new();
+
+                await expectRevert(
+                    this.exitGame.challengeStandardExit(this.args, { from: attacker.address }),
+                    'Paying out bond failed',
+                );
+            });
+
             it('should fail when exit for such exit id does not exist', async () => {
                 const args = getTestInputArgs(OUTPUT_TYPE.PAYMENT, alice);
                 await expectRevert(
                     this.exitGame.challengeStandardExit(args),
-                    'Such exit does not exist',
+                    'The exit does not exist',
                 );
             });
 
@@ -212,7 +228,7 @@ contract('PaymentStandardExitRouter', ([_, alice, bob]) => {
 
                 await expectRevert(
                     this.exitGame.challengeStandardExit(args),
-                    'not supporting MVP yet',
+                    'MVP is not yet supported',
                 );
             });
 
@@ -238,6 +254,21 @@ contract('PaymentStandardExitRouter', ([_, alice, bob]) => {
                 await expectRevert(
                     this.exitGame.challengeStandardExit(args),
                     'Test spending condition reverts',
+                );
+            });
+
+            it('should fail when provided exiting transaction does not match stored exiting transaction', async () => {
+                const args = getTestInputArgs(OUTPUT_TYPE.PAYMENT, alice);
+                await this.exitGame.setExit(args.exitId, getTestExitData(args, alice, this.startStandardExitBondSize));
+
+                const output = new PaymentTransactionOutput(OUTPUT_TYPE.PAYMENT, TEST_AMOUNT, alice, ETH);
+                const exitingTxObj = new PaymentTransaction(2, [0], [output]);
+                const exitingTx = web3.utils.bytesToHex(exitingTxObj.rlpEncoded());
+                args.exitingTx = exitingTx;
+
+                await expectRevert(
+                    this.exitGame.challengeStandardExit(args, { from: bob }),
+                    'Invalid exiting tx causing outputId mismatch',
                 );
             });
 

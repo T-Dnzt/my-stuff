@@ -2,11 +2,11 @@
 
 View Source: [contracts/src/framework/utils/PriorityQueue.sol](../../contracts/src/framework/utils/PriorityQueue.sol)
 
-**↗ Extends: [Ownable](Ownable.md)**
+**↗ Extends: [OnlyFromAddress](OnlyFromAddress.md)**
 
 **PriorityQueue**
 
-Min-heap priority queue implementation.
+Min-heap priority queue implementation
 
 ## Structs
 ### Queue
@@ -22,7 +22,8 @@ struct Queue {
 **Constants & Variables**
 
 ```js
-struct PriorityQueue.Queue internal queue;
+struct PriorityQueue.Queue private queue;
+address private framework;
 
 ```
 
@@ -79,10 +80,10 @@ returns(uint256[])
 
 ### insert
 
-Inserts an element into the queue by the owner.
+Inserts an element into the queue by the owner
 
 ```js
-function insert(uint256 _element) external nonpayable onlyOwner 
+function insert(uint256 _element) external nonpayable onlyFrom 
 ```
 
 **Arguments**
@@ -93,16 +94,16 @@ function insert(uint256 _element) external nonpayable onlyOwner
 
 ### delMin
 
-Deletes the smallest element from the queue.
+Deletes the smallest element from the queue
 
 ```js
-function delMin() external nonpayable onlyOwner 
+function delMin() external nonpayable onlyFrom 
 returns(uint256)
 ```
 
 **Returns**
 
-The smallest element in the priority queue.
+The smallest element in the priority queue
 
 **Arguments**
 
@@ -111,7 +112,7 @@ The smallest element in the priority queue.
 
 ### getMin
 
-Returns the smallest element from the queue.
+Returns the smallest element from the queue
 
 ```js
 function getMin() external view
@@ -120,7 +121,7 @@ returns(uint256)
 
 **Returns**
 
-The smallest element in the priority queue.
+The smallest element in the priority queue
 
 **Arguments**
 
@@ -185,6 +186,7 @@ returns(uint256)
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -199,7 +201,6 @@ returns(uint256)
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -230,7 +231,7 @@ returns(uint256)
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

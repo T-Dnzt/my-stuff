@@ -4,7 +4,7 @@ View Source: [contracts/src/utils/TxPosLib.sol](../../contracts/src/utils/TxPosL
 
 **TxPosLib**
 
-transaction position = (blockNumber * BLOCK_OFFSET_FOR_TX_POS + txIndex).
+Transaction position = (blockNumber * BLOCK_OFFSET_FOR_TX_POS + txIndex)
 
 ## Structs
 ### TxPos
@@ -30,7 +30,7 @@ uint256 internal constant BLOCK_OFFSET_FOR_TX_POS;
 
 ### blockNum
 
-Given a TX position, returns the block number.
+Returns the block number for a given a tx position
 
 ```js
 function blockNum(struct TxPosLib.TxPos _txPos) internal pure
@@ -39,17 +39,17 @@ returns(uint256)
 
 **Returns**
 
-The output's block number.
+Block number of the output
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| _txPos | struct TxPosLib.TxPos | position of transaction. | 
+| _txPos | struct TxPosLib.TxPos | Position of the transaction | 
 
 ### txIndex
 
-Given a Tx position, returns the transaction index.
+Returns the transaction index for a given tx position
 
 ```js
 function txIndex(struct TxPosLib.TxPos _txPos) internal pure
@@ -58,13 +58,13 @@ returns(uint256)
 
 **Returns**
 
-The output's transaction index.
+Transaction index of the output
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| _txPos | struct TxPosLib.TxPos | position of transaction. | 
+| _txPos | struct TxPosLib.TxPos | Position of the transaction | 
 
 ## Contracts
 
@@ -84,6 +84,7 @@ The output's transaction index.
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -98,7 +99,6 @@ The output's transaction index.
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -129,7 +129,7 @@ The output's transaction index.
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

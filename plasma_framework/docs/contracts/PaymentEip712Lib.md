@@ -4,7 +4,7 @@ View Source: [contracts/src/transactions/eip712Libs/PaymentEip712Lib.sol](../../
 
 **PaymentEip712Lib**
 
-Utilities for hashing structural data for PaymentTransaction, see EIP-712.
+Utilities for hashing structural data for PaymentTransaction (see EIP-712)
  *
 
 ## Structs
@@ -128,6 +128,7 @@ returns(bytes32)
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -142,7 +143,6 @@ returns(bytes32)
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -173,7 +173,7 @@ returns(bytes32)
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

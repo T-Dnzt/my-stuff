@@ -75,9 +75,9 @@ function run(struct PaymentChallengeStandardExit.Controller self, struct Payment
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| self | struct PaymentChallengeStandardExit.Controller | the controller struct | 
-| exitMap | struct PaymentExitDataModel.StandardExitMap | the storage of all standard exit data | 
-| args | struct PaymentStandardExitRouterArgs.ChallengeStandardExitArgs | arguments of challenge standard exit function from client. | 
+| self | struct PaymentChallengeStandardExit.Controller | The controller struct | 
+| exitMap | struct PaymentExitDataModel.StandardExitMap | The storage of all standard exit data | 
+| args | struct PaymentStandardExitRouterArgs.ChallengeStandardExitArgs | Arguments of challenge standard exit function from client | 
 
 ### verifyChallengeExitExists
 
@@ -133,6 +133,7 @@ function verifySpendingCondition(struct PaymentChallengeStandardExit.ChallengeSt
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -147,7 +148,6 @@ function verifySpendingCondition(struct PaymentChallengeStandardExit.ChallengeSt
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -178,7 +178,7 @@ function verifySpendingCondition(struct PaymentChallengeStandardExit.ChallengeSt
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

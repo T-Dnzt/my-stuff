@@ -22,14 +22,19 @@ library PaymentProcessStandardExit {
         uint160 indexed exitId
     );
 
+    event BondReturnFailed(
+        address indexed receiver,
+        uint256 amount
+    );
+
     /**
      * @notice Main logic function to process standard exit
      * @dev emits ExitOmitted event if the exit is omitted
      * @dev emits ExitFinalized event if the exit is processed and funds are withdrawn
-     * @param self the controller struct
-     * @param exitMap the storage of all standard exit data
-     * @param exitId the exitId of the standard exit
-     * @param token the ERC20 token address of the exit. Uses address(0) to represent ETH.
+     * @param self The controller struct
+     * @param exitMap The storage of all standard exit data
+     * @param exitId The exitId of the standard exit
+     * @param token The ERC20 token address of the exit. Uses address(0) to represent ETH.
      */
     function run(
         Controller memory self,
@@ -48,7 +53,13 @@ library PaymentProcessStandardExit {
 
         self.framework.flagOutputSpent(exit.outputId);
 
-        exit.exitTarget.transfer(exit.bondSize);
+        // we do not want to block a queue if bond return is unsuccessful
+        // solhint-disable-next-line avoid-call-value
+        (bool success, ) = exit.exitTarget.call.value(exit.bondSize)("");
+        if (!success) {
+            emit BondReturnFailed(exit.exitTarget, exit.bondSize);
+        }
+
         if (token == address(0)) {
             self.ethVault.withdraw(exit.exitTarget, exit.amount);
         } else {

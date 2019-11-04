@@ -22,7 +22,7 @@ const { expect } = require('chai');
 const { expectEvent, time } = require('openzeppelin-test-helpers');
 const { TX_TYPE, VAULT_ID } = require('../../../helpers/constants.js');
 
-contract('PaymentStandardExitRouter', ([_, outputOwner]) => {
+contract('PaymentExitGame - Update Bond', ([_, outputOwner]) => {
     const MIN_EXIT_PERIOD = 60 * 60 * 24 * 7; // 1 week
     const DUMMY_INITIAL_IMMUNE_VAULTS_NUM = 0;
     const INITIAL_IMMUNE_EXIT_GAME_NUM = 1;

@@ -12,13 +12,13 @@ import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/ma
 
 /**
 * @notice Verifies state transitions for payment transaction
-* @dev For Payment transaction to be valid, the state transition should check that the sum of the inputs is larger than the sum of the outputs
+* @dev For payment transaction to be valid, the state transition should check that the sum of the inputs is larger than the sum of the outputs
 */
 contract PaymentTransactionStateTransitionVerifier {
     using SafeMath for uint256;
 
     /**
-     * @dev For Payment transaction to be valid, the state transition should check that the sum of the inputs is larger than the sum of the outputs
+     * @dev For payment transaction to be valid, the state transition should check that the sum of the inputs is larger than the sum of the outputs
      */
     function isCorrectStateTransition(
         bytes calldata txBytes,
@@ -40,10 +40,15 @@ contract PaymentTransactionStateTransitionVerifier {
             inputs[i] = output;
         }
 
-        WireTransaction.Output[] memory outputs = new WireTransaction.Output[](inputTxs.length);
         PaymentTransactionModel.Transaction memory transaction = PaymentTransactionModel.decode(txBytes);
+        WireTransaction.Output[] memory outputs = new WireTransaction.Output[](transaction.outputs.length);
         for (uint i = 0; i < transaction.outputs.length; i++) {
-            outputs[i] = WireTransaction.Output(transaction.outputs[i].outputType, transaction.outputs[i].amount, transaction.outputs[i].outputGuard, transaction.outputs[i].token);
+            outputs[i] = WireTransaction.Output(
+                    transaction.outputs[i].outputType,
+                    transaction.outputs[i].amount,
+                    transaction.outputs[i].outputGuard,
+                    transaction.outputs[i].token
+                );
         }
 
         return _isCorrectStateTransition(inputs, outputs);
@@ -78,7 +83,7 @@ contract PaymentTransactionStateTransitionVerifier {
         pure
         returns (WireTransaction.Output[] memory)
     {
-        // it is needed to calculate the size of the filtered array
+        // Required for calculating the size of the filtered array
         uint256 arraySize = 0;
         for (uint i = 0; i < outputs.length; ++i) {
             if (outputs[i].token == token) {

@@ -6,7 +6,7 @@ View Source: [contracts/src/vaults/verifiers/EthDepositVerifier.sol](../../contr
 
 **EthDepositVerifier**
 
-implementation of Eth deposit verifier using Payment transaction as the deposit tx
+Implementation of ETH deposit verifier using payment transaction as the deposit transaction
 
 ## Contract Members
 **Constants & Variables**
@@ -25,7 +25,7 @@ uint8 internal constant DEPOSIT_TX_TYPE;
 ⤾ overrides [IEthDepositVerifier.verify](IEthDepositVerifier.md#verify)
 
 Overrides the function of IEthDepositVerifier and implements the verification logic
-        for Payment transaction.
+        for payment transaction
 
 ```js
 function verify(bytes depositTx, uint256 amount, address sender) external view
@@ -57,6 +57,7 @@ function verify(bytes depositTx, uint256 amount, address sender) external view
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -71,7 +72,6 @@ function verify(bytes depositTx, uint256 amount, address sender) external view
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -102,7 +102,7 @@ function verify(bytes depositTx, uint256 amount, address sender) external view
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

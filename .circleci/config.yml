@@ -19,40 +19,37 @@ commands:
       - run:
           name: Set up environment
           command: echo 'export PATH="$(npm bin):$PATH"' >> $BASH_ENV
-      - restore_cache:
-          keys:
-            - v4-dependencies-{{ checksum "plasma_framework/package-lock.json" }}
       - run:
           name: Install dependencies
           working_directory: ~/repo/plasma_framework
           command: |
             npm install
             find node_modules -name .git | xargs rm -fr  # workaround for a problem with git dependencies
-      - save_cache:
-          paths:
-            - plasma_framework/node_modules
-          key: v4-dependencies-{{ checksum "plasma_framework/package-lock.json" }}
 
   setup_python_env:
     steps:
       - checkout
       - run:
+          name: Change dependencies directories ownership
+          command: |
+            sudo chown -R circleci:circleci /usr/local/bin /usr/local/lib /usr/local/lib/python3.7/site-packages 
+      - restore_cache:
+          keys:
+            - dependencies_v2_{{ checksum "plasma_framework/python_tests/requirements.txt" }}
+      - run:
           name: Prepare environment
           command: |
-            sudo chown -R circleci:circleci /usr/local/bin /usr/local/lib/python3.7/site-packages
             sudo apt update && sudo apt install nodejs npm
             sudo npm install -g n && sudo n stable
             sudo npm install -g ganache-cli
-      - restore_cache:
-          keys:
-            - dependencies_v1_{{ checksum "requirements.txt" }}
       - run:
           name: Install dependencies
+          working_directory: ~/repo/plasma_framework/python_tests
           command: |
-            make init dev
+            make init dev 
             python -m solcx.install v0.5.11
       - save_cache:
-          key: dependencies-{{ checksum "requirements.txt" }}
+          key: dependencies_v2_{{ checksum "plasma_framework/python_tests/requirements.txt" }}
           paths:
             - /usr/local/bin
             - /usr/local/lib/python3.7/site-packages
@@ -113,6 +110,7 @@ jobs:
       - setup_python_env
       - run:
           name: Run tests
+          working_directory: ~/repo/plasma_framework/python_tests
           command: make test
   
   Python linter:
@@ -122,6 +120,7 @@ jobs:
       - setup_python_env
       - run:
           name: Run linter 
+          working_directory: ~/repo/plasma_framework/python_tests
           command: make lint
   
   Python long running tests:
@@ -131,6 +130,7 @@ jobs:
       - setup_python_env
       - run:
           name: Run slow tests
+          working_directory: ~/repo/plasma_framework/python_tests
           no_output_timeout: 10h
           command: make runslow 
 

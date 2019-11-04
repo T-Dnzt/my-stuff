@@ -24,7 +24,7 @@ const { calculateNormalExitable } = require('../../../helpers/exitable.js');
 const { buildUtxoPos, utxoPosToTxPos } = require('../../../helpers/positions.js');
 const { buildOutputGuard } = require('../../../helpers/utils.js');
 const { PaymentTransactionOutput, PaymentTransaction } = require('../../../helpers/transaction.js');
-const { VAULT_ID } = require('../../../helpers/constants.js');
+const { PROTOCOL, TX_TYPE, VAULT_ID } = require('../../../helpers/constants.js');
 
 contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOutputOwner]) => {
     const ETH = constants.ZERO_ADDRESS;
@@ -90,6 +90,9 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
             this.txFinalizationVerifier.address,
             PAYMENT_TX_TYPE,
         );
+
+        await this.framework.registerExitGame(TX_TYPE.PAYMENT, this.exitGame.address, PROTOCOL.MORE_VP);
+
         this.startIFEBondSize = await this.exitGame.startIFEBondSize();
         this.piggybackBondSize = await this.exitGame.piggybackBondSize();
     });
@@ -194,7 +197,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
             const data = await buildPiggybackOutputData();
             await expectRevert(
                 this.exitGame.piggybackInFlightExitOnOutput(data.outputOneCase.args),
-                'Input value mismatches with msg.value',
+                'Input value must match msg.value',
             );
         });
 
@@ -218,7 +221,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputOneCase.args, { from: outputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'Can only piggyback in first phase of exit period',
+                'Piggyback is possible only in the first phase of the exit period',
             );
         });
 
@@ -232,7 +235,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputOneCase.args, { from: outputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'Index exceed max size of the output',
+                'Index exceeds max size of the output',
             );
         });
 
@@ -250,7 +253,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputOneCase.args, { from: outputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'The indexed output has been piggybacked already',
+                'Indexed output already piggybacked',
             );
         });
 
@@ -264,7 +267,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputTwoCase.args, { from: outputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'Does not have outputGuardHandler registered for the output type',
+                'No outputGuardHandler is registered for the output type',
             );
         });
 
@@ -285,7 +288,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputTwoCase.args, { from: outputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'Some of the output guard related information is not valid',
+                'Some output guard information is invalid',
             );
         });
 
@@ -296,7 +299,7 @@ contract('PaymentInFlightExitRouter', ([_, alice, inputOwner, outputOwner, nonOu
                 this.exitGame.piggybackInFlightExitOnOutput(
                     data.outputOneCase.args, { from: nonOutputOwner, value: this.piggybackBondSize.toString() },
                 ),
-                'Can be called by the exit target only',
+                'Can be called only by the exit target',
             );
         });
 

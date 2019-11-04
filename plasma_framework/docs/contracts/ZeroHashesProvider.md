@@ -10,7 +10,7 @@ View Source: [contracts/src/vaults/ZeroHashesProvider.sol](../../contracts/src/v
 
 ### getZeroHashes
 
-Pre-computes zero hashes to be used for building merkle tree for deposit block
+Pre-computes zero hashes to be used for building Merkle tree for deposit block
 
 ```js
 function getZeroHashes() internal pure
@@ -40,6 +40,7 @@ returns(bytes32[16])
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -54,7 +55,6 @@ returns(bytes32[16])
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -85,7 +85,7 @@ returns(bytes32[16])
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

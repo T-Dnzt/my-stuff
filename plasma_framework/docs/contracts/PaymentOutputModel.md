@@ -4,7 +4,7 @@ View Source: [contracts/src/transactions/outputs/PaymentOutputModel.sol](../../c
 
 **PaymentOutputModel**
 
-Data structure and its decode function for Payment output
+Data structure and its decode function for payment output
 
 ## Structs
 ### Output
@@ -21,12 +21,12 @@ struct Output {
 ## Functions
 
 - [owner(struct PaymentOutputModel.Output _output)](#owner)
-- [decode(struct RLP.RLPItem encoded)](#decode)
+- [decode(struct RLPReader.RLPItem encoded)](#decode)
 
 ### owner
 
-Get the 'owner' from the output with the assumption of
-        'outputGuard' field directly holding owner's address.
+Retrieve the 'owner' from the output, assuming the 
+        'outputGuard' field directly holds the owner's address
 
 ```js
 function owner(struct PaymentOutputModel.Output _output) internal pure
@@ -42,7 +42,7 @@ returns(address payable)
 ### decode
 
 ```js
-function decode(struct RLP.RLPItem encoded) internal pure
+function decode(struct RLPReader.RLPItem encoded) internal pure
 returns(struct PaymentOutputModel.Output)
 ```
 
@@ -50,7 +50,7 @@ returns(struct PaymentOutputModel.Output)
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| encoded | struct RLP.RLPItem |  | 
+| encoded | struct RLPReader.RLPItem |  | 
 
 ## Contracts
 
@@ -70,6 +70,7 @@ returns(struct PaymentOutputModel.Output)
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -84,7 +85,6 @@ returns(struct PaymentOutputModel.Output)
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -115,7 +115,7 @@ returns(struct PaymentOutputModel.Output)
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

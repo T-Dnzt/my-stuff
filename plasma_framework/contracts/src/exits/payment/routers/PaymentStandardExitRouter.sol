@@ -14,13 +14,15 @@ import "../../../vaults/EthVault.sol";
 import "../../../vaults/Erc20Vault.sol";
 import "../../../framework/PlasmaFramework.sol";
 import "../../../framework/interfaces/IExitProcessor.sol";
-import "../../../framework/utils/Operated.sol";
 import "../../../utils/OnlyWithValue.sol";
+import "../../../utils/OnlyFromAddress.sol";
+import "../../../utils/FailFastReentrancyGuard.sol";
 
 contract PaymentStandardExitRouter is
     IExitProcessor,
-    Operated,
-    OnlyWithValue
+    OnlyFromAddress,
+    OnlyWithValue,
+    FailFastReentrancyGuard
 {
     using PaymentStartStandardExit for PaymentStartStandardExit.Controller;
     using PaymentChallengeStandardExit for PaymentChallengeStandardExit.Controller;
@@ -30,7 +32,7 @@ contract PaymentStandardExitRouter is
     // Initial bond size = 70000 (gas cost of challenge) * 20 gwei (current fast gas price) * 10 (safety margin)
     uint128 public constant INITIAL_BOND_SIZE = 14000000000000000 wei;
 
-    // each bond size upgrade can either at most increase to 200% or decrease to 50% of current bond
+    // Each bond size upgrade can either at most increase to 200% or decrease to 50% of current bond
     uint16 public constant BOND_LOWER_BOUND_DIVISOR = 2;
     uint16 public constant BOND_UPPER_BOUND_MULTIPLIER = 2;
 
@@ -39,6 +41,8 @@ contract PaymentStandardExitRouter is
     PaymentProcessStandardExit.Controller internal processStandardExitController;
     PaymentChallengeStandardExit.Controller internal challengeStandardExitController;
     BondSize.Params internal startStandardExitBond;
+
+    PlasmaFramework private framework;
 
     event StandardExitBondUpdated(uint128 bondSize);
 
@@ -60,7 +64,7 @@ contract PaymentStandardExitRouter is
     );
 
     constructor(
-        PlasmaFramework framework,
+        PlasmaFramework plasmaFramework,
         uint256 ethVaultId,
         uint256 erc20VaultId,
         OutputGuardHandlerRegistry outputGuardHandlerRegistry,
@@ -69,81 +73,85 @@ contract PaymentStandardExitRouter is
     )
         public
     {
-        address ethVaultAddress = framework.vaults(ethVaultId);
+        framework = plasmaFramework;
+
+        address ethVaultAddress = plasmaFramework.vaults(ethVaultId);
         require(ethVaultAddress != address(0), "Invalid ETH vault");
         EthVault ethVault = EthVault(ethVaultAddress);
 
-        address erc20VaultAddress = framework.vaults(erc20VaultId);
+        address erc20VaultAddress = plasmaFramework.vaults(erc20VaultId);
         require(erc20VaultAddress != address(0), "Invalid ERC20 vault");
         Erc20Vault erc20Vault = Erc20Vault(erc20VaultAddress);
 
         startStandardExitController = PaymentStartStandardExit.buildController(
-            this, framework, outputGuardHandlerRegistry, txFinalizationVerifier, ethVaultId, erc20VaultId
+            this, plasmaFramework, outputGuardHandlerRegistry, txFinalizationVerifier, ethVaultId, erc20VaultId
         );
 
         challengeStandardExitController = PaymentChallengeStandardExit.buildController(
-            framework, spendingConditionRegistry, outputGuardHandlerRegistry, txFinalizationVerifier
+            plasmaFramework, spendingConditionRegistry, outputGuardHandlerRegistry, txFinalizationVerifier
         );
 
         processStandardExitController = PaymentProcessStandardExit.Controller(
-            framework, ethVault, erc20Vault
+            plasmaFramework, ethVault, erc20Vault
         );
 
         startStandardExitBond = BondSize.buildParams(INITIAL_BOND_SIZE, BOND_LOWER_BOUND_DIVISOR, BOND_UPPER_BOUND_MULTIPLIER);
     }
 
     /**
-     * @notice Getter functions to retrieve standard exit data of the PaymentExitGame.
-     * @param exitId the exit id of such standard exit.
+     * @notice Getter retrieves standard exit data of the PaymentExitGame
+     * @param exitId Exit ID of the standard exit
      */
     function standardExits(uint160 exitId) public view returns (PaymentExitDataModel.StandardExit memory) {
         return standardExitMap.exits[exitId];
     }
 
     /**
-     * @notice Gets the standard exit bond size.
+     * @notice Retrieves the standard exit bond size
      */
     function startStandardExitBondSize() public view returns (uint128) {
         return startStandardExitBond.bondSize();
     }
 
     /**
-     * @notice Updates the standard exit bond size. Will take 2 days to come into effect.
-     * @param newBondSize The new bond size.
+     * @notice Updates the standard exit bond size, taking two days to become effective
+     * @param newBondSize The new bond size
      */
-    function updateStartStandardExitBondSize(uint128 newBondSize) public onlyOperator {
+    function updateStartStandardExitBondSize(uint128 newBondSize) public onlyFrom(framework.getMaintainer()) {
         startStandardExitBond.updateBondSize(newBondSize);
         emit StandardExitBondUpdated(newBondSize);
     }
 
     /**
-     * @notice Starts a standard exit of a given output. Uses output-age priority.
+     * @notice Starts a standard exit of a given output, using output-age priority
      */
     function startStandardExit(
         PaymentStandardExitRouterArgs.StartStandardExitArgs memory args
     )
         public
         payable
+        nonReentrant(framework)
         onlyWithValue(startStandardExitBondSize())
     {
         startStandardExitController.run(standardExitMap, args);
     }
 
     /**
-     * @notice Challenge a standard exit by showing the exiting output was spent.
+     * @notice Challenge a standard exit by showing the exiting output was spent
      */
     function challengeStandardExit(PaymentStandardExitRouterArgs.ChallengeStandardExitArgs memory args)
         public
         payable
+        nonReentrant(framework)
     {
         challengeStandardExitController.run(standardExitMap, args);
     }
 
     /**
-     * @notice Process standard exit.
-     * @dev This function is designed to be called in the main processExit function. Thus using internal.
-     * @param exitId The standard exit id.
-     * @param token The token (in erc20 address or address(0) for ETH) of the exiting output.
+     * @notice Process standard exit
+     * @dev This function is designed to be called in the main processExit function, using internal
+     * @param exitId The standard exit ID
+     * @param token The token (in erc20 address or address(0) for ETH) of the exiting output
      */
     function processStandardExit(uint160 exitId, address token) internal {
         processStandardExitController.run(standardExitMap, exitId, token);

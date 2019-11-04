@@ -75,9 +75,9 @@ function run(struct PaymentChallengeIFEInputSpent.Controller self, struct Paymen
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| self | struct PaymentChallengeIFEInputSpent.Controller | the controller struct | 
-| inFlightExitMap | struct PaymentExitDataModel.InFlightExitMap | the storage of all in-flight exit data | 
-| args | struct PaymentInFlightExitRouterArgs.ChallengeInputSpentArgs | arguments of 'challengeInFlightExitInputSpent' function from client. | 
+| self | struct PaymentChallengeIFEInputSpent.Controller | The controller struct | 
+| inFlightExitMap | struct PaymentExitDataModel.InFlightExitMap | The storage of all in-flight exit data | 
+| args | struct PaymentInFlightExitRouterArgs.ChallengeInputSpentArgs | Arguments of 'challengeInFlightExitInputSpent' function from client | 
 
 ### verifySpentInputEqualsIFEInput
 
@@ -133,6 +133,7 @@ function verifySpendingCondition(struct PaymentChallengeIFEInputSpent.ChallengeI
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -147,7 +148,6 @@ function verifySpendingCondition(struct PaymentChallengeIFEInputSpent.ChallengeI
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -178,7 +178,7 @@ function verifySpendingCondition(struct PaymentChallengeIFEInputSpent.ChallengeI
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

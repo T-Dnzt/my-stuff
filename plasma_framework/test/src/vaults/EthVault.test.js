@@ -13,23 +13,30 @@ const { spentOnGas } = require('../../helpers/utils.js');
 const { PROTOCOL, OUTPUT_TYPE } = require('../../helpers/constants.js');
 const Testlang = require('../../helpers/testlang.js');
 
-contract('EthVault', ([_, alice]) => {
+contract('EthVault', ([_, authority, maintainer, alice]) => {
     const DEPOSIT_VALUE = 1000000;
     const INITIAL_IMMUNE_VAULTS = 1;
     const INITIAL_IMMUNE_EXIT_GAMES = 1;
     const MIN_EXIT_PERIOD = 10;
 
     beforeEach('setup contracts', async () => {
-        this.framework = await PlasmaFramework.new(MIN_EXIT_PERIOD, INITIAL_IMMUNE_VAULTS, INITIAL_IMMUNE_EXIT_GAMES);
+        this.framework = await PlasmaFramework.new(
+            MIN_EXIT_PERIOD,
+            INITIAL_IMMUNE_VAULTS,
+            INITIAL_IMMUNE_EXIT_GAMES,
+            authority,
+            maintainer,
+        );
+        await this.framework.activateChildChain({ from: authority });
         this.ethVault = await EthVault.new(this.framework.address);
         const depositVerifier = await EthDepositVerifier.new();
-        await this.ethVault.setDepositVerifier(depositVerifier.address);
-        await this.framework.registerVault(1, this.ethVault.address);
+        await this.ethVault.setDepositVerifier(depositVerifier.address, { from: maintainer });
+        await this.framework.registerVault(1, this.ethVault.address, { from: maintainer });
         this.currentDepositVerifier = depositVerifier.address;
 
         this.exitGame = await DummyExitGame.new();
         await this.exitGame.setEthVault(this.ethVault.address);
-        await this.framework.registerExitGame(1, this.exitGame.address, PROTOCOL.MORE_VP);
+        await this.framework.registerExitGame(1, this.exitGame.address, PROTOCOL.MORE_VP, { from: maintainer });
     });
 
     describe('deposit', () => {
@@ -78,12 +85,12 @@ contract('EthVault', ([_, alice]) => {
 
             await expectRevert(
                 this.ethVault.deposit(deposit, { from: alice, value: DEPOSIT_VALUE + 1 }),
-                'Deposited value does not match sent amount.',
+                'Deposited value must match sent amount.',
             );
 
             await expectRevert(
                 this.ethVault.deposit(deposit, { from: alice, value: DEPOSIT_VALUE - 1 }),
-                'Deposited value does not match sent amount.',
+                'Deposited value must match sent amount.',
             );
         });
 
@@ -92,7 +99,7 @@ contract('EthVault', ([_, alice]) => {
 
             await expectRevert(
                 this.ethVault.deposit(deposit, { value: DEPOSIT_VALUE }),
-                "Depositor's address does not match sender's address.",
+                "Depositor's address must match sender's address",
             );
         });
 
@@ -102,7 +109,7 @@ contract('EthVault', ([_, alice]) => {
 
             await expectRevert(
                 this.ethVault.deposit(deposit, { from: alice, value: DEPOSIT_VALUE }),
-                'Output does not have correct currency (ETH).',
+                'Output requires correct currency (ETH).',
             );
         });
 
@@ -148,7 +155,7 @@ contract('EthVault', ([_, alice]) => {
 
             expect(await this.ethVault.getEffectiveDepositVerifier()).to.equal(this.currentDepositVerifier);
 
-            const tx = await this.ethVault.setDepositVerifier(newDepositVerifier.address);
+            const tx = await this.ethVault.setDepositVerifier(newDepositVerifier.address, { from: maintainer });
             expect(await this.ethVault.getEffectiveDepositVerifier()).to.equal(this.currentDepositVerifier);
             await expectEvent.inLogs(tx.logs, 'SetDepositVerifierCalled', { nextDepositVerifier: newDepositVerifier.address });
 
@@ -166,7 +173,7 @@ contract('EthVault', ([_, alice]) => {
         it('should fail when not called by a registered exit game contract', async () => {
             await expectRevert(
                 this.ethVault.withdraw(constants.ZERO_ADDRESS, 0),
-                'Called from a nonregistered or quarantined Exit Game contract',
+                'Called from a non-registered or quarantined exit game contract',
             );
         });
 
@@ -195,17 +202,45 @@ contract('EthVault', ([_, alice]) => {
             );
         });
 
+        describe('when fund transfer fails', () => {
+            beforeEach(async () => {
+                this.amount = 2 * DEPOSIT_VALUE;
+                this.preBalance = new BN(await web3.eth.getBalance(this.ethVault.address));
+                const { receipt } = await this.exitGame.proxyEthWithdraw(alice, this.amount);
+                this.withdrawReceipt = receipt;
+            });
+
+            it('should emit WithdrawFailed event', async () => {
+                await expectEvent.inTransaction(
+                    this.withdrawReceipt.transactionHash,
+                    EthVault,
+                    'WithdrawFailed',
+                    {
+                        receiver: alice,
+                        amount: new BN(this.amount),
+                    },
+                );
+            });
+
+            it('should not transfer ETH', async () => {
+                const postBalance = new BN(await web3.eth.getBalance(this.ethVault.address));
+                expect(postBalance).to.be.bignumber.equal(this.preBalance);
+            });
+        });
+
         describe('given quarantined exit game', () => {
             beforeEach(async () => {
                 this.newExitGame = await DummyExitGame.new();
                 await this.newExitGame.setEthVault(this.ethVault.address);
-                await this.framework.registerExitGame(2, this.newExitGame.address, PROTOCOL.MORE_VP);
+                await this.framework.registerExitGame(
+                    2, this.newExitGame.address, PROTOCOL.MORE_VP, { from: maintainer },
+                );
             });
 
             it('should fail when called under quarantine', async () => {
                 await expectRevert(
                     this.newExitGame.proxyEthWithdraw(alice, DEPOSIT_VALUE),
-                    'Called from a nonregistered or quarantined Exit Game contract',
+                    'Called from a non-registered or quarantined exit game contract',
                 );
             });
 

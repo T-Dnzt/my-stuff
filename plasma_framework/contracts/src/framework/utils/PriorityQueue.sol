@@ -1,13 +1,13 @@
 pragma solidity 0.5.11;
 
-import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/ownership/Ownable.sol";
+import "../../utils/OnlyFromAddress.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/math/SafeMath.sol";
 
 /**
  * @title PriorityQueue
- * @dev Min-heap priority queue implementation.
+ * @dev Min-heap priority queue implementation
  */
-contract PriorityQueue is Ownable {
+contract PriorityQueue is OnlyFromAddress {
     using SafeMath for uint256;
 
     struct Queue {
@@ -15,11 +15,16 @@ contract PriorityQueue is Ownable {
         uint256 currentSize;
     }
 
-    Queue internal queue;
+    Queue private queue;
+    address private framework;
 
     constructor() public {
         queue.heapList = [0];
         queue.currentSize = 0;
+
+        // it is expected that this should be called by PlasmaFramework
+        // and only PlasmaFramework contract can add things to the queue
+        framework = msg.sender;
     }
 
     /**
@@ -37,20 +42,22 @@ contract PriorityQueue is Ownable {
     }
 
     /**
-     * @notice Inserts an element into the queue by the owner.
-     * @dev Does not perform deduplication.
+     * @notice Inserts an element into the queue by the framework
+     * @dev Does not perform deduplication
      */
-    function insert(uint256 _element) external onlyOwner {
+    function insert(uint256 _element) external onlyFrom(framework) {
         queue.heapList.push(_element);
         queue.currentSize = queue.currentSize.add(1);
         percUp(queue, queue.currentSize);
     }
 
     /**
-     * @notice Deletes the smallest element from the queue.
-     * @return The smallest element in the priority queue.
+     * @notice Deletes the smallest element from the queue by the framework
+     * @dev Fails when queue is empty
+     * @return The smallest element in the priority queue
      */
-    function delMin() external onlyOwner returns (uint256) {
+    function delMin() external onlyFrom(framework) returns (uint256) {
+        require(queue.currentSize > 0, "Queue is empty");
         uint256 retVal = queue.heapList[1];
         queue.heapList[1] = queue.heapList[queue.currentSize];
         delete queue.heapList[queue.currentSize];
@@ -61,11 +68,12 @@ contract PriorityQueue is Ownable {
     }
 
     /**
-     * @notice Returns the smallest element from the queue.
-     * @dev Fails when queue is empty.
-     * @return The smallest element in the priority queue.
+     * @notice Returns the smallest element from the queue
+     * @dev Fails when queue is empty
+     * @return The smallest element in the priority queue
      */
     function getMin() external view returns (uint256) {
+        require(queue.currentSize > 0, "Queue is empty");
         return queue.heapList[1];
     }
 

@@ -2,7 +2,7 @@
 
 View Source: [contracts/src/framework/registries/VaultRegistry.sol](../../contracts/src/framework/registries/VaultRegistry.sol)
 
-**↗ Extends: [Operated](Operated.md)**
+**↗ Extends: [OnlyFromAddress](OnlyFromAddress.md)**
 **↘ Derived Contracts: [BlockController](BlockController.md), [PlasmaFramework](PlasmaFramework.md)**
 
 **VaultRegistry**
@@ -29,7 +29,7 @@ event VaultRegistered(uint256  vaultId, address  vaultAddress);
 
 ### onlyFromNonQuarantinedVault
 
-modifier to check the call is from a non-quarantined vault.
+A modifier to check that the call is from a non-quarantined vault
 
 ```js
 modifier onlyFromNonQuarantinedVault() internal
@@ -43,13 +43,14 @@ modifier onlyFromNonQuarantinedVault() internal
 ## Functions
 
 - [(uint256 _minExitPeriod, uint256 _initialImmuneVaults)](#)
+- [getMaintainer()](#getmaintainer)
 - [registerVault(uint256 _vaultId, address _vaultAddress)](#registervault)
 - [vaults(uint256 _vaultId)](#vaults)
 - [vaultToId(address _vaultAddress)](#vaulttoid)
 
 ### 
 
-For each new vault contract, it should take at least 1 minExitPeriod to be able to start take effect to protect deposit transaction in mempool.
+It takes at least 1 minExitPeriod for each new vault contract to start protecting deposit transaction in mempool
      see: https://github.com/omisego/plasma-contracts/issues/173
 
 ```js
@@ -63,24 +64,40 @@ function (uint256 _minExitPeriod, uint256 _initialImmuneVaults) public nonpayabl
 | _minExitPeriod | uint256 |  | 
 | _initialImmuneVaults | uint256 |  | 
 
-### registerVault
+### getMaintainer
 
-Register a vault within the PlasmaFramework. This can only be called by the maintainer.
+⤿ Overridden Implementation(s): [ExitGameRegistry.getMaintainer](ExitGameRegistry.md#getmaintainer),[PlasmaFramework.getMaintainer](PlasmaFramework.md#getmaintainer)
+
+interface to get the 'maintainer' address.
 
 ```js
-function registerVault(uint256 _vaultId, address _vaultAddress) public nonpayable onlyOperator 
+function getMaintainer() public view
+returns(address)
 ```
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| _vaultId | uint256 | the id for the vault contract to register. | 
-| _vaultAddress | address | address of the vault contract. | 
+
+### registerVault
+
+Register a vault within the PlasmaFramework. Only a maintainer can make the call.
+
+```js
+function registerVault(uint256 _vaultId, address _vaultAddress) public nonpayable onlyFrom 
+```
+
+**Arguments**
+
+| Name        | Type           | Description  |
+| ------------- |------------- | -----|
+| _vaultId | uint256 | The ID for the vault contract to register | 
+| _vaultAddress | address | Address of the vault contract | 
 
 ### vaults
 
-public getter for getting vault address with vault id
+Public getter for retrieving vault address with vault ID
 
 ```js
 function vaults(uint256 _vaultId) public view
@@ -95,7 +112,7 @@ returns(address)
 
 ### vaultToId
 
-public getter for getting vault id with vault address
+Public getter for retrieving vault ID with vault address
 
 ```js
 function vaultToId(address _vaultAddress) public view
@@ -126,6 +143,7 @@ returns(uint256)
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -140,7 +158,6 @@ returns(uint256)
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -171,7 +188,7 @@ returns(uint256)
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

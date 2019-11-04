@@ -2,7 +2,7 @@
 
 View Source: [contracts/src/framework/BlockController.sol](../../contracts/src/framework/BlockController.sol)
 
-**↗ Extends: [Operated](Operated.md), [VaultRegistry](VaultRegistry.md)**
+**↗ Extends: [OnlyFromAddress](OnlyFromAddress.md), [VaultRegistry](VaultRegistry.md)**
 **↘ Derived Contracts: [PlasmaFramework](PlasmaFramework.md)**
 
 **BlockController**
@@ -17,6 +17,7 @@ address public authority;
 uint256 public childBlockInterval;
 uint256 public nextChildBlock;
 uint256 public nextDeposit;
+bool public isChildChainActivated;
 mapping(uint256 => struct BlockModel.Block) public blocks;
 
 ```
@@ -25,12 +26,13 @@ mapping(uint256 => struct BlockModel.Block) public blocks;
 
 ```js
 event BlockSubmitted(uint256  blockNumber);
+event ChildChainActivated(address  authority);
 ```
 
 ## Functions
 
-- [(uint256 _interval, uint256 _minExitPeriod, uint256 _initialImmuneVaults)](#)
-- [initAuthority()](#initauthority)
+- [(uint256 _interval, uint256 _minExitPeriod, uint256 _initialImmuneVaults, address _authority)](#)
+- [activateChildChain()](#activatechildchain)
 - [setAuthority(address newAuthority)](#setauthority)
 - [submitBlock(bytes32 _blockRoot)](#submitblock)
 - [submitDepositBlock(bytes32 _blockRoot)](#submitdepositblock)
@@ -39,7 +41,7 @@ event BlockSubmitted(uint256  blockNumber);
 ### 
 
 ```js
-function (uint256 _interval, uint256 _minExitPeriod, uint256 _initialImmuneVaults) public nonpayable VaultRegistry 
+function (uint256 _interval, uint256 _minExitPeriod, uint256 _initialImmuneVaults, address _authority) public nonpayable VaultRegistry 
 ```
 
 **Arguments**
@@ -49,13 +51,14 @@ function (uint256 _interval, uint256 _minExitPeriod, uint256 _initialImmuneVault
 | _interval | uint256 |  | 
 | _minExitPeriod | uint256 |  | 
 | _initialImmuneVaults | uint256 |  | 
+| _authority | address |  | 
 
-### initAuthority
+### activateChildChain
 
-Sets the operator's authority address and unlocks block submission.
+Activates the child chain so that child chain can start to submit child blocks to root chain
 
 ```js
-function initAuthority() external nonpayable
+function activateChildChain() external nonpayable onlyFrom 
 ```
 
 **Arguments**
@@ -65,36 +68,36 @@ function initAuthority() external nonpayable
 
 ### setAuthority
 
-Allows the operator to set a new authority address. This allows to implement mechanical
-re-org protection mechanism, explained in https://github.com/omisego/plasma-contracts/issues/118
+Allows the operator to set a new authority address, enabling implementation of mechanical
+re-org protection mechanism described here: https://github.com/omisego/plasma-contracts/issues/118
 
 ```js
-function setAuthority(address newAuthority) external nonpayable onlyOperator 
+function setAuthority(address newAuthority) external nonpayable onlyFrom 
 ```
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| newAuthority | address | address of new authority, cannot be blank. | 
+| newAuthority | address | Address of new authority, which cannot be blank | 
 
 ### submitBlock
 
-Allows the authority to submit the Merkle root of a plasma block.
+Allows the authority to submit the Merkle root of a Plasma block
 
 ```js
-function submitBlock(bytes32 _blockRoot) external nonpayable
+function submitBlock(bytes32 _blockRoot) external nonpayable onlyFrom 
 ```
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| _blockRoot | bytes32 | Merkle root of the plasma block. | 
+| _blockRoot | bytes32 | Merkle root of the Plasma block | 
 
 ### submitDepositBlock
 
-Submits a block for deposit.
+Submits a block for deposit
 
 ```js
 function submitDepositBlock(bytes32 _blockRoot) public nonpayable onlyFromNonQuarantinedVault 
@@ -103,13 +106,13 @@ returns(uint256)
 
 **Returns**
 
-the deposit block number
+The deposit block number
 
 **Arguments**
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| _blockRoot | bytes32 | Merkle root of the plasma block. | 
+| _blockRoot | bytes32 | Merkle root of the Plasma block | 
 
 ### nextDepositBlock
 
@@ -141,6 +144,7 @@ returns(uint256)
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -155,7 +159,6 @@ returns(uint256)
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -186,7 +189,7 @@ returns(uint256)
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

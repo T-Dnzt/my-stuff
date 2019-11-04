@@ -22,7 +22,7 @@ mapping(uint256 => contract IOutputGuardHandler) public outputGuardHandlers;
 
 ### registerOutputGuardHandler
 
-Register the output guard handler.
+Register the output guard handler
 
 ```js
 function registerOutputGuardHandler(uint256 outputType, IOutputGuardHandler handler) public nonpayable onlyOwner 
@@ -32,8 +32,8 @@ function registerOutputGuardHandler(uint256 outputType, IOutputGuardHandler hand
 
 | Name        | Type           | Description  |
 | ------------- |------------- | -----|
-| outputType | uint256 | output type that the parser is registered with. | 
-| handler | IOutputGuardHandler | The output guard handler contract. | 
+| outputType | uint256 | The output type registered with the parser | 
+| handler | IOutputGuardHandler | The output guard handler contract | 
 
 ## Contracts
 
@@ -53,6 +53,7 @@ function registerOutputGuardHandler(uint256 outputType, IOutputGuardHandler hand
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -67,7 +68,6 @@ function registerOutputGuardHandler(uint256 outputType, IOutputGuardHandler hand
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -98,7 +98,7 @@ function registerOutputGuardHandler(uint256 outputType, IOutputGuardHandler hand
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)

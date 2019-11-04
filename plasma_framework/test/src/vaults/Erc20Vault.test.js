@@ -14,8 +14,7 @@ const Testlang = require('../../helpers/testlang.js');
 const { PaymentTransaction, PaymentTransactionOutput } = require('../../helpers/transaction.js');
 const { PROTOCOL, OUTPUT_TYPE } = require('../../helpers/constants.js');
 
-contract('Erc20Vault', (accounts) => {
-    const alice = accounts[1];
+contract('Erc20Vault', ([_, erc20Minter, authority, maintainer, alice]) => {
     const DEPOSIT_VALUE = 100;
     const INITIAL_SUPPLY = 1000000;
     const INITIAL_IMMUNE_VAULTS = 1;
@@ -24,19 +23,26 @@ contract('Erc20Vault', (accounts) => {
 
 
     beforeEach('setup contracts', async () => {
-        this.framework = await PlasmaFramework.new(MIN_EXIT_PERIOD, INITIAL_IMMUNE_VAULTS, INITIAL_IMMUNE_EXIT_GAMES);
+        this.framework = await PlasmaFramework.new(
+            MIN_EXIT_PERIOD,
+            INITIAL_IMMUNE_VAULTS,
+            INITIAL_IMMUNE_EXIT_GAMES,
+            authority,
+            maintainer,
+        );
+        await this.framework.activateChildChain({ from: authority });
         this.erc20Vault = await Erc20Vault.new(this.framework.address);
         const depositVerifier = await Erc20DepositVerifier.new();
-        await this.erc20Vault.setDepositVerifier(depositVerifier.address);
-        await this.framework.registerVault(2, this.erc20Vault.address);
+        await this.erc20Vault.setDepositVerifier(depositVerifier.address, { from: maintainer });
+        await this.framework.registerVault(2, this.erc20Vault.address, { from: maintainer });
 
         this.exitGame = await DummyExitGame.new();
         await this.exitGame.setErc20Vault(this.erc20Vault.address);
-        await this.framework.registerExitGame(1, this.exitGame.address, PROTOCOL.MORE_VP);
+        await this.framework.registerExitGame(1, this.exitGame.address, PROTOCOL.MORE_VP, { from: maintainer });
 
-        this.erc20 = await ERC20Mintable.new();
-        await this.erc20.mint(accounts[0], INITIAL_SUPPLY, { from: accounts[0] });
-        await this.erc20.transfer(alice, DEPOSIT_VALUE, { from: accounts[0] });
+        this.erc20 = await ERC20Mintable.new({ from: erc20Minter });
+        await this.erc20.mint(erc20Minter, INITIAL_SUPPLY, { from: erc20Minter });
+        await this.erc20.transfer(alice, DEPOSIT_VALUE, { from: erc20Minter });
     });
 
     describe('deposit', () => {
@@ -97,7 +103,7 @@ contract('Erc20Vault', (accounts) => {
 
             await expectRevert(
                 this.erc20Vault.deposit(deposit),
-                "Depositor's address does not match sender's address.",
+                "Depositor's address must match sender's address",
             );
         });
 
@@ -155,8 +161,8 @@ contract('Erc20Vault', (accounts) => {
         // as described here https://medium.com/coinmonks/missing-return-value-bug-at-least-130-tokens-affected-d67bf08521ca
         // Erc20Vault should support both versions.
         before('setup', async () => {
-            this.nonCompliantERC20 = await NonCompliantERC20.new(INITIAL_SUPPLY);
-            await this.nonCompliantERC20.transfer(alice, DEPOSIT_VALUE, { from: accounts[0] });
+            this.nonCompliantERC20 = await NonCompliantERC20.new(INITIAL_SUPPLY, { from: erc20Minter });
+            await this.nonCompliantERC20.transfer(alice, DEPOSIT_VALUE, { from: erc20Minter });
         });
 
         it('should store erc20 deposit', async () => {
@@ -174,13 +180,13 @@ contract('Erc20Vault', (accounts) => {
     describe('withdraw', () => {
         beforeEach(async () => {
             this.testFundAmount = 1000;
-            await this.erc20.transfer(this.erc20Vault.address, this.testFundAmount, { from: accounts[0] });
+            await this.erc20.transfer(this.erc20Vault.address, this.testFundAmount, { from: erc20Minter });
         });
 
         it('should fail when not called by a registered exit game contract', async () => {
             await expectRevert(
                 this.erc20Vault.withdraw(constants.ZERO_ADDRESS, constants.ZERO_ADDRESS, 0),
-                'Called from a nonregistered or quarantined Exit Game contract',
+                'Called from a non-registered or quarantined exit game contract',
             );
         });
 
@@ -216,13 +222,15 @@ contract('Erc20Vault', (accounts) => {
             beforeEach(async () => {
                 this.newExitGame = await DummyExitGame.new();
                 await this.newExitGame.setErc20Vault(this.erc20Vault.address);
-                await this.framework.registerExitGame(2, this.newExitGame.address, PROTOCOL.MORE_VP);
+                await this.framework.registerExitGame(
+                    2, this.newExitGame.address, PROTOCOL.MORE_VP, { from: maintainer },
+                );
             });
 
             it('should fail when called under quarantine', async () => {
                 await expectRevert(
                     this.newExitGame.proxyErc20Withdraw(alice, this.erc20.address, this.testFundAmount),
-                    'Called from a nonregistered or quarantined Exit Game contract',
+                    'Called from a non-registered or quarantined exit game contract',
                 );
             });
 
@@ -249,8 +257,8 @@ contract('Erc20Vault', (accounts) => {
     describe('withdraw with NonCompliantERC20', () => {
         beforeEach(async () => {
             this.testFundAmount = 1000;
-            this.nonCompliantERC20 = await NonCompliantERC20.new(INITIAL_SUPPLY);
-            await this.nonCompliantERC20.transfer(this.erc20Vault.address, this.testFundAmount, { from: accounts[0] });
+            this.nonCompliantERC20 = await NonCompliantERC20.new(INITIAL_SUPPLY, { from: erc20Minter });
+            await this.nonCompliantERC20.transfer(this.erc20Vault.address, this.testFundAmount, { from: erc20Minter });
         });
 
         it('should transfer ERC token to the receiver', async () => {

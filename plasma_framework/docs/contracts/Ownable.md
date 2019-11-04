@@ -2,7 +2,7 @@
 
 View Source: [https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/ownership/Ownable.sol](../../https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/master/contracts/ownership/Ownable.sol)
 
-**↘ Derived Contracts: [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md), [PriorityQueue](PriorityQueue.md), [SpendingConditionRegistry](SpendingConditionRegistry.md)**
+**↘ Derived Contracts: [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md), [SpendingConditionRegistry](SpendingConditionRegistry.md)**
 
 **Ownable**
 
@@ -157,6 +157,7 @@ function _transferOwnership(address newOwner) internal nonpayable
 * [ExitGameRegistry](ExitGameRegistry.md)
 * [ExitId](ExitId.md)
 * [ExitPriority](ExitPriority.md)
+* [FailFastReentrancyGuard](FailFastReentrancyGuard.md)
 * [IERC20](IERC20.md)
 * [IErc20DepositVerifier](IErc20DepositVerifier.md)
 * [IEthDepositVerifier](IEthDepositVerifier.md)
@@ -171,7 +172,6 @@ function _transferOwnership(address newOwner) internal nonpayable
 * [Migrations](Migrations.md)
 * [OnlyFromAddress](OnlyFromAddress.md)
 * [OnlyWithValue](OnlyWithValue.md)
-* [Operated](Operated.md)
 * [OutputGuardHandlerRegistry](OutputGuardHandlerRegistry.md)
 * [OutputGuardModel](OutputGuardModel.md)
 * [OutputId](OutputId.md)
@@ -202,7 +202,7 @@ function _transferOwnership(address newOwner) internal nonpayable
 * [PriorityQueue](PriorityQueue.md)
 * [Protocol](Protocol.md)
 * [Quarantine](Quarantine.md)
-* [RLP](RLP.md)
+* [RLPReader](RLPReader.md)
 * [SafeERC20](SafeERC20.md)
 * [SafeMath](SafeMath.md)
 * [SpendingConditionRegistry](SpendingConditionRegistry.md)
