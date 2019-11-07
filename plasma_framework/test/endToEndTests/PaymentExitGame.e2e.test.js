@@ -3,7 +3,6 @@ const Erc20Vault = artifacts.require('Erc20Vault');
 const EthDepositVerifier = artifacts.require('EthDepositVerifier');
 const Erc20DepositVerifier = artifacts.require('Erc20DepositVerifier');
 const ExitableTimestamp = artifacts.require('ExitableTimestampWrapper');
-const ExitId = artifacts.require('ExitIdWrapper');
 const ExitPriority = artifacts.require('ExitPriorityWrapper');
 const ERC20Mintable = artifacts.require('ERC20Mintable');
 const OutputGuardHandlerRegistry = artifacts.require('OutputGuardHandlerRegistry');
@@ -32,16 +31,16 @@ const { expect } = require('chai');
 
 const {
     PROTOCOL, TX_TYPE, OUTPUT_TYPE, EMPTY_BYTES, VAULT_ID,
-} = require('../../../helpers/constants.js');
-const { MerkleTree } = require('../../../helpers/merkle.js');
-const { PaymentTransactionOutput, PaymentTransaction } = require('../../../helpers/transaction.js');
+} = require('../helpers/constants.js');
+const { MerkleTree } = require('../helpers/merkle.js');
+const { PaymentTransactionOutput, PaymentTransaction } = require('../helpers/transaction.js');
 const {
     computeDepositOutputId, computeNormalOutputId, spentOnGas, exitQueueKey,
-} = require('../../../helpers/utils.js');
-const { sign } = require('../../../helpers/sign.js');
-const { hashTx } = require('../../../helpers/paymentEip712.js');
-const { buildUtxoPos, utxoPosToTxPos } = require('../../../helpers/positions.js');
-const Testlang = require('../../../helpers/testlang.js');
+} = require('../helpers/utils.js');
+const { sign } = require('../helpers/sign.js');
+const { hashTx } = require('../helpers/paymentEip712.js');
+const { buildUtxoPos, utxoPosToTxPos } = require('../helpers/positions.js');
+const Testlang = require('../helpers/testlang.js');
 
 contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer, authority]) => {
     const MIN_EXIT_PERIOD = 60 * 60 * 24 * 7; // 1 week
@@ -85,7 +84,6 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
     };
 
     const deployStableContracts = async () => {
-        this.exitIdHelper = await ExitId.new();
         this.exitPriorityHelper = await ExitPriority.new();
 
         this.erc20 = await ERC20Mintable.new();
@@ -146,7 +144,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
         this.piggybackBondSize = await this.exitGame.piggybackBondSize();
 
         this.toPaymentCondition = await PaymentOutputToPaymentTxCondition.new(
-            this.framework.address, OUTPUT_TYPE.PAYMENT, TX_TYPE.PAYMENT,
+            this.framework.address, TX_TYPE.PAYMENT, TX_TYPE.PAYMENT,
         );
         await spendingConditionRegistry.registerSpendingCondition(
             OUTPUT_TYPE.PAYMENT, TX_TYPE.PAYMENT, this.toPaymentCondition.address,
@@ -214,7 +212,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                 this.aliceDepositReceipt = receipt;
             });
 
-            it('should have transfered the ETH from Alice to vault', async () => {
+            it('should have transferred the ETH from Alice to vault', async () => {
                 const aliceBalanceAfterDeposit = new BN(await web3.eth.getBalance(alice));
                 const ethVaultBalanceAfterDeposit = new BN(await web3.eth.getBalance(this.ethVault.address));
                 const expectedAliceBalance = this.aliceBalanceBeforeDeposit
@@ -241,7 +239,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                 });
 
                 it('should save the StandardExit data when successfully done', async () => {
-                    const exitId = await this.exitIdHelper.getStandardExitId(true, this.depositTx, this.depositUtxoPos);
+                    const exitId = await this.exitGame.getStandardExitId(true, this.depositTx, this.depositUtxoPos);
                     const standardExitData = await this.exitGame.standardExits(exitId);
 
                     const outputIndexForDeposit = 0;
@@ -266,7 +264,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                     const exitableAt = await this.exitableHelper
                         .calculateDepositTxOutputExitableTimestamp(currentTimestamp);
 
-                    const exitIdExpected = await this.exitIdHelper.getStandardExitId(
+                    const exitIdExpected = await this.exitGame.getStandardExitId(
                         true, this.depositTx, this.depositUtxoPos,
                     );
                     const priorityExpected = await this.exitPriorityHelper.computePriority(
@@ -319,7 +317,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                 });
 
                 it('should start successully', async () => {
-                    const exitId = await this.exitIdHelper.getStandardExitId(
+                    const exitId = await this.exitGame.getStandardExitId(
                         false, this.transferTx, this.transferUtxoPos,
                     );
                     const standardExitData = await this.exitGame.standardExits(exitId);
@@ -347,7 +345,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
             });
         });
 
-        describe('Given Alice deposited ETH and transfered some to Bob', () => {
+        describe('Given Alice deposited ETH and transferred some to Bob', () => {
             beforeEach(async () => {
                 await aliceDepositsETH();
                 await aliceTransferSomeEthToBob();
@@ -367,7 +365,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                         args, { from: alice, value: this.startStandardExitBondSize },
                     );
 
-                    this.exitId = await this.exitIdHelper.getStandardExitId(
+                    this.exitId = await this.exitGame.getStandardExitId(
                         true, this.depositTx, this.depositUtxoPos,
                     );
                 });
@@ -384,9 +382,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
 
                         const args = {
                             exitId: this.exitId.toString(10),
-                            outputType: OUTPUT_TYPE.PAYMENT,
                             exitingTx: this.depositTx,
-                            challengeTxType: TX_TYPE.PAYMENT,
                             challengeTx: this.transferTx,
                             inputIndex: 0,
                             witness: signature,
@@ -488,7 +484,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
 
                     it('should start successully', async () => {
                         const isDeposit = true;
-                        const exitId = await this.exitIdHelper.getStandardExitId(
+                        const exitId = await this.exitGame.getStandardExitId(
                             isDeposit, this.depositTx, this.depositUtxoPos,
                         );
                         const standardExitData = await this.exitGame.standardExits(exitId);
@@ -567,7 +563,7 @@ contract('PaymentExitGame - End to End Tests', ([_, richFather, bob, maintainer,
                         { from: alice, value: this.startIFEBondSize },
                     );
 
-                    this.exitId = await this.exitIdHelper.getInFlightExitId(this.inFlightTxRaw);
+                    this.exitId = await this.exitGame.getInFlightExitId(this.inFlightTxRaw);
                 });
 
                 describe('And owner of the output piggybacks', () => {
