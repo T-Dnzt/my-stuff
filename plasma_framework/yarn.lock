@@ -101,10 +101,10 @@
   resolved "https://registry.yarnpkg.com/@truffle/error/-/error-0.0.7.tgz#e9db39885575647ef08bf624b0c13fe46d41a209"
   integrity sha512-UIfVKsXSXocKnn5+RNklUXNoGd/JVj7V8KmC48TQzmjU33HQI86PX0JDS7SpHMHasI3w9X//1q7Lu7nZtj3Zzg==
 
-"@truffle/hdwallet-provider@^1.0.21":
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/@truffle/hdwallet-provider/-/hdwallet-provider-1.0.23.tgz#00a586e4c8b98eb43c8b703dc60e16438a67fd5c"
-  integrity sha512-p+imSJ9TystP8JnabDmJ/wJ+YrCmMzuN6heTDRWJvqwsewmE71WLI4UCtvyPM9j3Nkjjlhn3zApSzjUdANCdRg==
+"@truffle/hdwallet-provider@^1.0.22":
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/@truffle/hdwallet-provider/-/hdwallet-provider-1.0.34.tgz#1e642c415c28e9ae3bb8142bbdbc8506adaaa06a"
+  integrity sha512-sy7sismdclvzWQmHDjElqPGoU1+ff4w3nODKqBpauacAYpWngu865CrtgRNnETZ1c90zDElU41V6yWrUgKupAQ==
   dependencies:
     any-promise "^1.3.0"
     bindings "^1.5.0"
@@ -113,8 +113,9 @@
     ethereumjs-tx "^1.0.0"
     ethereumjs-util "^6.1.0"
     ethereumjs-wallet "^0.6.3"
+    source-map-support "^0.5.16"
     web3 "1.2.1"
-    web3-provider-engine "https://github.com/trufflesuite/provider-engine#web3-one"
+    web3-provider-engine "git+https://github.com/trufflesuite/provider-engine.git#web3-one"
 
 "@truffle/interface-adapter@^0.3.0":
   version "0.3.1"
@@ -256,9 +257,9 @@ acorn-jsx@^5.0.0:
   integrity sha512-tMUqwBWfLFbJbizRmEcWSLw6HnFzfdJs2sOJEOwwtVPMoH/0Ay+E703oZz78VSXZiiDcZrQ5XKjPIUQixhmgVw==
 
 acorn@^6.0.7:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.3.0.tgz#0087509119ffa4fc0a0041d1e93a417e68cb856e"
-  integrity sha512-/czfa8BwS88b9gWQVhc8eknunSA2DoJpJyTQkhheIf5E48u1N0R4q/YxxsAeqRrmK9TQ/uYfgLDfZo91UlANIA==
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  integrity sha512-ZVA9k326Nwrj3Cj9jlh3wGFutC2ZornPNARZwsNYqQYgN0EsV2d53w5RN/co65Ohn4sUAUtb1rSUAOD6XN9idA==
 
 address@^1.0.1:
   version "1.1.2"
@@ -6692,7 +6693,7 @@ source-map-support@^0.4.15:
   dependencies:
     source-map "^0.5.6"
 
-source-map-support@^0.5.6:
+source-map-support@^0.5.16, source-map-support@^0.5.6:
   version "0.5.16"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.16.tgz#0ae069e7fe3ba7538c64c98515e35339eac5a042"
   integrity sha512-efyLRJDr68D9hBBNIPWFjhpFzURh+KJykQwvMyW5UiZzYwoF6l4YMMDIJJEyFWxWCqfyxLzz6tSfUFR+kXXsVQ==
